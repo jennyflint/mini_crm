@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\CompanyController;
+use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,13 +15,14 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/', [HomeController::class, 'welcome']);
 
-Route::get('/', function () {
-    return view('welcome');
+require __DIR__ . '/auth.php';
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
+    
+    Route::resource('company', CompanyController::class)->except(['show']);
+    Route::resource('client', ClientController::class)->except(['show']);
+    Route::get('client/ajax/load',[ ClientController::class, 'loadClients']);
 });
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
-require __DIR__.'/auth.php';
