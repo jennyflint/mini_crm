@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\ClientApiController;
+use App\Http\Controllers\Api\CompanyApiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('get-companies', [CompanyApiController::class, 'getAllCompanies']);
+    Route::get('get-clients/{company}', [CompanyApiController::class, 'getAllClients']);
+    Route::get('get-client-companies/{client}', [ClientApiController::class, 'getClientCompanies']);
 });
